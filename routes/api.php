@@ -15,4 +15,4 @@ use App\Http\Controllers\Api\ServiceDiscoveryController;
 |
 */
 
-Route::get("invoice/{provider}/{invoice_id}", [ServiceDiscoveryController::class, "callToService"]);
+Route::get("invoices/{provider}/{invoice_id}", [ServiceDiscoveryController::class, "callToService"]);
