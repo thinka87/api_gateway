@@ -26,4 +26,4 @@ A list of technologies used within the project:
 
 ## Testing
 
-* Run php artisan test command in api_gateway
+* Run " php artisan test " command in api_gateway
