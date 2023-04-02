@@ -15,23 +15,21 @@ class ServiceDiscoveryController extends Controller
         $provider= $request->provider;
         $invoice_id = $request->invoice_id;
         
-        $providers=config('invoiceprovides.providers'); //get registered provider list
-        
+        $providers= \Config::get('invoiceprovides.providers'); //get registered provider list
+           
         //Validate service providers 
         if(InvoiceProvidersHelper::isValidProvider($request->provider, $providers)===false){            
             return response()->json(["error" => "service provider not found"],400);
         }
-        
-        $vars = array('$invoice_id' => $invoice_id);
-        
-        $provider_service_urls = config('invoiceprovides.providers_service_url'); 
-        $provider_service_url_template = $provider_service_urls[$provider];
-        $provider_service_url=  strtr($provider_service_url_template["service_url"], $vars); //replace parameteres
+       
+        $provider_service_url = config('invoiceprovides.providers_service_url'); 
+        $provider_service_url_config = $provider_service_url[$provider];
+
         
         $params= array();
-        $params["url"]= "https://qa-app.capcito.com/api/v3/work-sample/invoices/fortsocks/9f587e13-682e-4d91-867f-fd3aec3b70b";
-        $params["request_timeout"]= $provider_service_url_template["request_timeout"];
-        $params["connection_timeout"]= $provider_service_url_template["connection_timeout"];
+        $params["url"]= $provider_service_url_config["service_url"]."/".$provider."/".$invoice_id;
+        $params["request_timeout"]= $provider_service_url_config["request_timeout"];
+        $params["connection_timeout"]= $provider_service_url_config["connection_timeout"];
         
         $response= HttpClientHelper::get($params);
         return response()->json($response->json(),$response->status()); 
