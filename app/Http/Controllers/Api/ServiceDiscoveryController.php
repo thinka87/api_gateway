@@ -12,8 +12,8 @@ class ServiceDiscoveryController extends Controller
     
     public function callToService(Request $request){
         
-        $provider= $request->provider;
-        $invoice_id = $request->invoice_id;
+        $provider= strtolower($request->provider); //provider
+        $invoice_id = $request->invoice_id; //invoice id
         
         $providers= \Config::get('invoiceprovides.providers'); //get registered provider list
            
@@ -22,16 +22,16 @@ class ServiceDiscoveryController extends Controller
             return response()->json(["error" => "service provider not found"],400);
         }
        
-        $provider_service_url = config('invoiceprovides.providers_service_url'); 
-        $provider_service_url_config = $provider_service_url[$provider];
+        $provider_service_url = config('invoiceprovides.providers_service_url'); //get providers service urls
+        $provider_service_url_config = $provider_service_url[$provider]; //get request provider settings
 
         
         $params= array();
-        $params["url"]= $provider_service_url_config["service_url"]."/".$provider."/".$invoice_id;
-        $params["request_timeout"]= $provider_service_url_config["request_timeout"];
-        $params["connection_timeout"]= $provider_service_url_config["connection_timeout"];
+        $params["url"]= $provider_service_url_config["service_url"]."/".$provider."/".$invoice_id; //call to invoice micro service
+        $params["request_timeout"]= $provider_service_url_config["request_timeout"]; //get time out value
+        $params["connection_timeout"]= $provider_service_url_config["connection_timeout"]; // get conncetion time out
         
-        $response= HttpClientHelper::get($params);
-        return response()->json($response->json(),$response->status()); 
+        $response= HttpClientHelper::get($params); // call http client
+        return response()->json($response->json(),$response->status()); //return response
     }
 }
